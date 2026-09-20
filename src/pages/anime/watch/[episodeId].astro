@@ -1,0 +1,60 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import AnimeWatchPage from '../../../components/Anime/AnimeWatchPage';
+import { getAnimeInfo } from '../../../lib/api/anime/animeService';
+
+export const prerender = false;
+
+const { episodeId } = Astro.params;
+
+if (!episodeId) {
+  return Astro.redirect('/anime');
+}
+
+const animeIdParam = Astro.url.searchParams.get('animeId');
+const epNumParam = Astro.url.searchParams.get('epNum');
+const seasonParam = Astro.url.searchParams.get('s') || Astro.url.searchParams.get('season');
+
+let epNum = epNumParam ? parseInt(epNumParam, 10) : 1;
+let seasonNum = seasonParam ? parseInt(seasonParam, 10) : 1;
+
+// Parse episode ID if it contains encoded series, season, and episode (e.g. "37854-s1e2")
+let targetAnimeId = animeIdParam;
+if (!targetAnimeId && episodeId) {
+  const match = /^(.*?)-s(\d+)e(\d+)$/i.exec(episodeId);
+  if (match) {
+    targetAnimeId = match[1];
+    if (!seasonParam) seasonNum = parseInt(match[2], 10) || 1;
+    if (!epNumParam) epNum = parseInt(match[3], 10) || 1;
+  } else {
+    targetAnimeId = episodeId;
+  }
+}
+
+let anime = null;
+if (targetAnimeId) {
+  try {
+    anime = await getAnimeInfo(targetAnimeId, seasonNum);
+  } catch (e) {
+    console.warn('Could not pre-fetch anime info:', e);
+  }
+}
+
+const isMovie = anime?.type?.toLowerCase() === 'movie';
+const pageTitle = anime
+  ? isMovie
+    ? `Watch ${anime.title} — Stellarix`
+    : `Watch ${anime.title} S${seasonNum} Ep ${epNum} — Stellarix`
+  : `Watch Anime Episode ${epNum} — Stellarix`;
+---
+
+<Layout title={pageTitle}>
+  <AnimeWatchPage
+    client:load
+    episodeId={episodeId}
+    anime={anime}
+    animeId={targetAnimeId || anime?.id}
+    episodeNumber={epNum}
+    seasonNumber={seasonNum}
+  />
+</Layout>

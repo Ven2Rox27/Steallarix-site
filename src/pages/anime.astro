@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AppShell from '../components/AppShell';
+import AnimeSearchPage from '../components/Anime/AnimeSearchPage';
+---
+
+<Layout title="Anime — Stellarix" description="Watch and discover thousands of anime titles, movies, and episodes in high definition with Sub & Dub.">
+  <AppShell client:load currentPath="/anime" />
+  <AnimeSearchPage client:load />
+</Layout>

@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AppShell from '../components/AppShell';
+import BrowseView from '../components/Browse/BrowseView';
+---
+
+<Layout title="Movies — Stellarix">
+  <AppShell client:load currentPath="/movies" />
+  <BrowseView client:load initialMediaType="movie" />
+</Layout>

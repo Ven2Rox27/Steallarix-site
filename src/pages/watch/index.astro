@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AnimeWatchPage from '../../components/Anime/AnimeWatchPage';
+import { getAnimeInfo } from '../../lib/api/anime/animeService';
+
+export const prerender = false;
+
+const episodeId = Astro.url.searchParams.get('episodeId');
+const animeId = Astro.url.searchParams.get('animeId');
+const epNumStr = Astro.url.searchParams.get('epNum');
+const epNum = epNumStr ? parseInt(epNumStr, 10) : 1;
+
+if (!episodeId) {
+  return Astro.redirect('/browse');
+}
+
+let anime = null;
+if (animeId) {
+  try {
+    anime = await getAnimeInfo(animeId);
+  } catch (err) {
+    console.warn('Could not load anime info for watch query:', err);
+  }
+}
+---
+
+<Layout title={anime ? `Watch ${anime.title} Episode ${epNum} — Stellarix` : `Watch Episode ${epNum} — Stellarix`}>
+  <AnimeWatchPage
+    client:load
+    episodeId={episodeId}
+    anime={anime}
+    episodeNumber={epNum}
+  />
+</Layout>
+
+<style>
+  html, body {
+    overflow: hidden;
+    height: 100vh;
+    background-color: #000;
+  }
+</style>

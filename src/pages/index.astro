@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AppShell from '../components/AppShell';
+import HomePage from '../components/HomePage';
+---
+
+<Layout title="Stellarix — Stream Movies, Anime & TV Shows">
+  <AppShell client:load currentPath="/" />
+  <HomePage client:load />
+</Layout>

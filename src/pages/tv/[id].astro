@@ -1,0 +1,23 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AppShell from '../../components/AppShell';
+import MediaDetail from '../../components/MediaDetail/MediaDetail';
+import { getDetails } from '../../lib/api/mediaService';
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/tv');
+}
+
+const item = await getDetails(id, 'tv');
+
+if (!item) {
+  return Astro.redirect('/tv');
+}
+---
+
+<Layout title={`${item.title} — Stellarix`} description={item.description}>
+  <AppShell client:load currentPath={`/tv/${item.id}`} />
+  <MediaDetail client:load item={item} />
+</Layout>

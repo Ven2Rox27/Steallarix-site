@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AppShell from '../../components/AppShell';
+import AnimeDetailPage from '../../components/Anime/AnimeDetailPage';
+import { getAnimeInfo } from '../../lib/api/anime/animeService';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/anime');
+}
+
+let anime = null;
+let error: string | null = null;
+
+try {
+  anime = await getAnimeInfo(id);
+} catch (err: any) {
+  error = err?.message || 'Failed to load anime info.';
+}
+---
+
+<Layout title={anime ? `${anime.title} — Stellarix Anime` : 'Anime Details — Stellarix'} description={anime?.description || 'Watch anime series in HD with Sub & Dub.'}>
+  <AppShell client:load currentPath={`/anime/${id}`} />
+  <AnimeDetailPage client:load anime={anime} animeId={id} error={error} />
+</Layout>

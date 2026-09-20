@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AppShell from '../components/AppShell';
+import WatchlistView from '../components/Watchlist/WatchlistView';
+---
+
+<Layout title="Watchlist — Stellarix">
+  <AppShell client:load currentPath="/watchlist" />
+  <WatchlistView client:load />
+</Layout>

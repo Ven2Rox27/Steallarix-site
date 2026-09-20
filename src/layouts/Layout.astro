@@ -1,0 +1,30 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Stellarix — Stream Movies, Anime & TV Shows',
+  description = 'Your premium destination for Movies, Anime, and TV Shows. Stream in 4K HDR with Sub & Dub support.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#08080a" />
+    <title>{title}</title>
+  </head>
+  <body class="bg-base text-text-primary min-h-screen antialiased">
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import WatchPage from '../../components/WatchPage';
+import { getMovieDetails, getDetails, getTVDetails } from '../../lib/api/mediaService';
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/browse');
+}
+
+const hasEpParam = Astro.url.searchParams.has('ep') || Astro.url.searchParams.has('s');
+let item = null;
+
+if (hasEpParam) {
+  item = (await getTVDetails(id)) || (await getDetails(id, 'tv')) || (await getMovieDetails(id)) || (await getDetails(id));
+} else {
+  item = (await getMovieDetails(id)) || (await getDetails(id)) || (await getTVDetails(id));
+}
+
+if (!item) {
+  return Astro.redirect('/browse');
+}
+---
+
+<Layout title={`Watch ${item.title} — Stellarix`}>
+  <WatchPage client:only="react" item={item} />
+</Layout>
+
+<style>
+  /* Hide scrollbar on watch page */
+  html, body {
+    overflow: hidden;
+    height: 100vh;
+  }
+</style>

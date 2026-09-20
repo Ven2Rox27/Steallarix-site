@@ -1,0 +1,24 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AppShell from '../../components/AppShell';
+import MediaDetail from '../../components/MediaDetail/MediaDetail';
+import { getMovieDetails, getDetails } from '../../lib/api/mediaService';
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/movies');
+}
+
+// Dynamically fetch movie details from TMDB / centralized service
+const item = (await getMovieDetails(id)) || (await getDetails(id, 'movie'));
+
+if (!item) {
+  return Astro.redirect('/movies');
+}
+---
+
+<Layout title={`${item.title} — Stellarix`} description={item.description} image={item.backdropUrl || item.posterUrl}>
+  <AppShell client:load currentPath={`/movie/${item.id}`} />
+  <MediaDetail client:load item={item} />
+</Layout>
